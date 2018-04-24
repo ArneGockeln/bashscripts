@@ -22,12 +22,18 @@ USE_DEBUG=0
 
 # test for parameter
 if [ $# -lt 1 ]; then
+    echo "The script assumes that there is a wp-config.php file in the run directory."
     echo "Usage: "
     echo "  $0 {do24|un24|ahaus}"
     exit 1
 fi
 
 PROJECT=$1
+
+# if second argument is 1, enable wp_debug
+if [ "$2" == "1" ]; then
+    USE_DEBUG=1;
+fi
 
 # test for wp-config.php
 if [ ! -f "wp-config.php" ]; then
@@ -45,10 +51,12 @@ sed -i '' -e "s/DB_HOST', '.*'/DB_HOST', '$DB_HOST'/g" wp-config.php
 # change wp_debug
 if [ $USE_DEBUG == 1 ]; then
     echo "Enable WP_DEBUG."
-    sed -i '' -e "s/WP_DEBUG', .*)/WP_DEBUG', true)/g" wp-config.php
+    sed -i '' -e "s/WP_DEBUG',.*)/WP_DEBUG', true)/g" wp-config.php
+    sed -i '' -e "s/WP_DEBUG_DISPLAY',.*)/WP_DEBUG_DISPLAY', true)/g" wp-config.php
 else
     echo "Disable WP_DEBUG."
     sed -i '' -e "s/WP_DEBUG', .*)/WP_DEBUG', false)/g" wp-config.php
+    sed -i '' -e "s/WP_DEBUG_DISPLAY',.*)/WP_DEBUG_DISPLAY', false)/g" wp-config.php
 fi
 
 # replace db and db prefix 
