@@ -4,7 +4,7 @@
  * Author: Arne Gockeln <arne@gockeln.com>
  */ 
 if($argc == 1){
-	printf("Usage: %s [-nuos]\n\t[-n num] Send num requests\n\t[-u http...] The url to request\n\t[-o] Output response on hit\n\t[-s phrase1,phrase2,...] A comma seperated list of phrases\n", $argv[0]);
+	printf("Usage: %s [-nuos]\n\t[-n num] Send num requests\n\t[-u http...] The url to request\n\t[-o] Output every response instead on hit only\n\t[-s phrase1,phrase2,...] A comma seperated list of phrases\n", $argv[0]);
 	exit();
 }
 
@@ -15,14 +15,6 @@ $request_url = $request_host . '/wp-json/appbackend/v1/config';
 $search_phrases = ['Datenbankverbindung', 'Fehler'];
 
 // ----------------------------------
-
-function is_json($string){
-	if(strlen($string) <= 0){
-		return false;
-	}
-
-	return substr($string, 0, 1) == '{' && substr($string, -1) == '}';
-}
 
 $request_headers = [];
 $request_headers[] = 'AppBackendToken: my_awesome_token';
@@ -79,9 +71,6 @@ for($i = 0; $i < $request_count; $i++){
 	printf("=> Request: %s - %ss\n", $i + 1, number_format($response_time,2));
 	
 	if($doOutput){
-		if( !is_json($response) ){
-			printf("-- ERROR: No JSON! --\n");
-		}
 		printf("%s\n", $response);
 	}
 
