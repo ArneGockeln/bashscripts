@@ -121,8 +121,7 @@ for($i = 0; $i < $request_count; $i++){
 
 	$response = curl_exec($ch);
 	$response_time = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
-	$response_size = curl_getinfo($ch, CURLINFO_SIZE_DOWNLOAD);
-	$response_size = $response_size * 0.001;
+	$response_size = (int)curl_getinfo($ch, CURLINFO_SIZE_DOWNLOAD) * 0.001;
 	$total_time += $response_time;
 	curl_close($ch);
 
