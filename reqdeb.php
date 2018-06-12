@@ -20,6 +20,7 @@ if($argc == 1){
 }
 
 $request_count = 5;
+$request_count_digits = 0;
 $request_url = $argv[ $argc - 1 ];
 $search_phrases = ['Datenbankverbindung', 'Fehler'];
 
@@ -35,6 +36,7 @@ $options = getopt('n:ou:s:h:j');
 if(isset($options['n'])){
 	if((int)$options['n'] > 0){
 		$request_count = (int) $options['n'];
+		$request_count_digits = strlen((string) $request_count);
 	}
 }
 
@@ -96,19 +98,35 @@ printf("[Search each response] \n");
 for($i1 = 0; $i1 < $search_phrases_c; $i1++){
 	printf("- %s\n", $search_phrases[$i1]);
 }
-printf("--------------------------------------------\n");
+$terminal_width = (int)exec('tput cols') - 2;
+$dashes = '';
+for($i = 0; $i < $terminal_width; $i++){
+	$dashes .= '-';
+}
+printf("[%s]\n", $dashes);
 for($i = 0; $i < $request_count; $i++){
 	$ch = curl_init();
+	// set url for request
 	curl_setopt($ch, CURLOPT_URL, $request_url);
+	// return response as string
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	// set http headers
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);
+	// force new cookie session
+	curl_setopt($ch, CURLOPT_COOKIESESSION, 1);
+	// close connection explicitly
+	curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+	// force new connect
+	curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
 
 	$response = curl_exec($ch);
 	$response_time = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
+	$response_size = curl_getinfo($ch, CURLINFO_SIZE_DOWNLOAD);
+	$response_size = $response_size * 0.001;
 	$total_time += $response_time;
 	curl_close($ch);
 
-	printf("=> Request: %s - %ss\n", $i + 1, number_format($response_time,2));
+	printf("> Request: % ".$request_count_digits."d - %ss - %s KB\n", $i + 1, number_format($response_time,2), number_format($response_size, 2));
 	
 	if($doOutput){
 		printf("%s\n", $response);
