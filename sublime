@@ -1,0 +1,4 @@
+#!/bin/bash
+# find a sublime-project file in the current directory and open it with sublime text
+# You need to have a "subl" script in you usr/local/bin directory.
+find . -name *.sublime-project -exec subl {} \;
