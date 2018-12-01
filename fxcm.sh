@@ -1,39 +1,49 @@
 #!/bin/bash
-# Author: Arne Gockeln, https://www.arnegockeln.com
-# This scripts downloads, extracts, converts, concatenates and processes tick data of FXCM public repository.
+#author: Arne Gockeln, https://www.arnegockeln.com
+#description: This scripts downloads, extracts, converts, concatenates and processes tick data of FXCM public repository.
+#             It is tested on macOS Mojave. You need to install dos2unix! like brew install dos2unix.
 # 
-# Usage: ./fxcm.sh SYMBOL STARTWEEK ENDWEEK
+#             Usage: ./fxcm.sh SYMBOL YEAR STARTWEEK ENDWEEK
 # 
-# Example: Download week 1-4 of EURUSD. Output will be saved to EURUSD.csv
+#             Example: Download week 1-4 of 2018 of EURUSD. Output will be saved to EURUSD-2018-1-4.csv
 # 
-# $	./fxcm.sh EURUSD 1 4
-# 
-SYMBOL=$1
-START=$2
-END=$3
+#             $ ./fxcm.sh EURUSD 2018 1 4
+#version: 1.0
+#notes: requires tr, dos2unix
 
-# 1. download the week files with curl. [1-14] means week 1-14
-curl -O https://tickdata.fxcorporate.com/$SYMBOL/2018/[$START-$END].csv.gz
-# 2. extract all week files:
+if [ $# -lt 4 ]; then
+	echo "Usage:"
+	echo "  $0 SYMBOL YEAR STARTWEEK ENDWEEK"
+	exit 1
+fi
+
+SYMBOL=$1
+YEAR=$2
+START=$3
+END=$4
+
+OUTPUTFILE="${SYMBOL}-${YEAR}-${START}-${END}"
+
+# download the week files with curl. [1-14] means week 1-14
+curl -O "https://tickdata.fxcorporate.com/${SYMBOL}/${YEAR}/[${START}-${END}].csv.gz"
+# extract all week files:
+echo " "
 echo "Extraction..."
-find . -type f -iname "*.csv.gz" -print0 | while IFS= read -r -d $'\0' line; do gunzip $line; done
-# 3. replace 0byte characters
+for file in $(ls -1p|sort -n|grep -v /|grep csv.gz); do echo "  ${file}"; gunzip "${file}"; done
+# replace 0byte characters
 echo "0byte replacement..."
-find . -type f -iname "*.csv" -print0 | while IFS= read -r -d $'\0' line; do tr < $line -d '\000' > $line.out; done
-# 4. convert to unix (get it with: brew install dos2unix)
-echo "dos2unix conversion..."
-find . -type f -iname "*.csv.out" -print0 | while IFS= read -r -d $'\0' line; do dos2unix $line; done
-# 5. rename files
-echo "renaming..."
-find . -type f -iname "*.csv.out" | while read FILE; do newfile="$(echo ${FILE} |sed -e 's/csv\.out/csv/')"; mv "${FILE}" "${newfile}"; done
-# 6. concat to 1 file, ls -1p sorted
+for file in $(ls -1p|sort -n|grep -v /|grep csv); do echo "  ${file}"; tr < "${file}" -d '\000' > "${file}.out"; rm "${file}"; done
+# convert to unix (get it with: brew install dos2unix), replace Datetime,Bid,Ask lines
+echo "dos2unix conversion and replace headers..."
+for file in $(ls -1p|sort -n|grep -v /|grep csv.out); do dos2unix "${file}"; sed -i '' '/DateTime,Bid,Ask/d' "${file}"; done
+# concat to 1 file, ls -1p sorted
 echo "concatenation..."
-for file in $(ls -1p|grep -v /|grep csv); do cat $file >> "${SYMBOL}.result"; done
-# 7. replace Datetime,Bid,Ask lines
+for file in $(ls -1p|sort -n|grep -v /|grep csv.out); do echo "  ${file} >> ${OUTPUTFILE}.result"; cat "${file}" >> "${OUTPUTFILE}.result"; done
+# clear csv files
 echo "file cleanup..."
-sed -i '' '/DateTime,Bid,Ask/d' "${SYMBOL}.result"
-# 8. clear csv files
-rm *.csv*
-# 9. renaming
-mv "${SYMBOL}.result" "${SYMBOL}.csv"
+rm *.csv.out
+# renaming
+mv "${OUTPUTFILE}.result" "${OUTPUTFILE}.csv"
+# file size
 echo "Done."
+du -sh "${OUTPUTFILE}.csv"
