@@ -23,8 +23,7 @@ fi
 # the file name
 DATE=$(date +"%Y-%m-%d")
 DATELONG=$(date +"%Y-%m-%d %H:%M:%S %z")
-FILENAME=$(echo ${TITLE} |tr '[:upper:]' '[:lower:]')
-FILENAME=$(echo ${FILENAME} |tr ' ' '-')
+FILENAME=$(echo ${TITLE} |tr '[:upper:]' '[:lower:]' |tr -cd '[0-9A-Za-z\ ]' |tr ' ' '-')
 FILENAME="${DATE}-${FILENAME}.md"
 
 PATH="${FILENAME}"
@@ -32,20 +31,20 @@ if [ -d "_posts/" ]; then
 	PATH="_posts/${FILENAME}"
 fi
 
-if [ ! -f "${FILENAME}" ]; then
+if [ ! -f "${PATH}" ]; then
 	# create file because touch does not work
-	echo -n > ${FILENAME}
+	echo -n > ${PATH}
 	# create jekyll header
-	echo "---" >> ${FILENAME}
-	echo "layout: post" >> ${FILENAME}
-	echo "title: \"${TITLE}\"" >> ${FILENAME}
-	echo "date: ${DATELONG}" >> ${FILENAME}
-	echo "author: Arne Gockeln" >> ${FILENAME}
-	echo "categories: [${CATEGORIES}]" >> ${FILENAME}
-	echo "---" >> ${FILENAME}
-	echo "" >> ${FILENAME}
-	echo "${FILENAME} created."
+	echo "---" >> ${PATH}
+	echo "layout: post" >> ${PATH}
+	echo "title: \"${TITLE}\"" >> ${PATH}
+	echo "date: ${DATELONG}" >> ${PATH}
+	echo "author: Arne Gockeln" >> ${PATH}
+	echo "categories: [${CATEGORIES}]" >> ${PATH}
+	echo "---" >> ${PATH}
+	echo "" >> ${PATH}
+	echo "${PATH} created."
 else 
-	echo "File ${FILENAME} already exists!"
+	echo "File ${PATH} already exists!"
 fi
 exit 0
