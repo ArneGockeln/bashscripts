@@ -41,9 +41,6 @@ if [ ! -f "${FILENAME}" ]; then
 	echo "title: \"${TITLE}\"" >> ${FILENAME}
 	echo "date: ${DATELONG}" >> ${FILENAME}
 	echo "author: Arne Gockeln" >> ${FILENAME}
-
-	if []
-
 	echo "categories: [${CATEGORIES}]" >> ${FILENAME}
 	echo "---" >> ${FILENAME}
 	echo "" >> ${FILENAME}
