@@ -7,7 +7,7 @@ D_DB="do24_test"
 D_TABLE_PREFIX="d24dev_"
 ## unna24
 U_DB="unna24_local"
-U_TABLE_PREFIX="j9qk96g_"
+U_TABLE_PREFIX="d24dev_"
 ## ahaus.jetzt
 A_DB="ahaus"
 A_TABLE_PREFIX="d24dev_"

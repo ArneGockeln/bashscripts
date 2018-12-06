@@ -1,6 +1,7 @@
 #!/bin/bash
 # This script creates a new jekyll post template inside the _posts folder,
-# or inside the current folder if the _posts folder does not exist.
+# or inside the current folder if the _posts folder does not exist. Run it
+# in the root of your jekyll project.
 # 
 # autor: Arne Gockeln, http://www.arnegockeln.com
 # version: 1.0
