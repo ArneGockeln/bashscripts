@@ -52,6 +52,7 @@ for file in $(ls -1p|sort -n|grep -v /|grep csv.gz); do
 		echo "  ERROR: ${file} is not a zip file!";
 		echo "";
 		cat "${file}";
+		rm "${file}";
 		exit 1;
 	fi
 
