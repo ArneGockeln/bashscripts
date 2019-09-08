@@ -23,6 +23,10 @@ fi
 case "$CMD" in
     build)
     eval $BUILDCMD
+    # create index.html files in empty folders
+    echo "Create index.html in all empty folders..."
+    find ./_site/ -depth -type d '!' -exec test -e "{}/index.html" ';' -print|while read f; do echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=/index.html" /></head><body></body></html>' > "$f/index.html"; done
+    echo "done."
     ;;
     
     run)
