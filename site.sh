@@ -10,8 +10,8 @@
 # 
 
 CMD=$1
-BUILDCMD="bundle exec jekyll build"
-RUNCMD="bundle exec jekyll serve"
+BUILDCMD="JEKYLL_ENV=production bundle exec jekyll build"
+RUNCMD="JEKYLL_ENV=development bundle exec jekyll serve"
 
 # check if we are inside a jekyll directory
 JEKYLL=$(find . -maxdepth 1 -name _config.yml)
@@ -30,6 +30,7 @@ case "$CMD" in
     ;;
     
     run)
+    
     eval $RUNCMD
     ;;
 
