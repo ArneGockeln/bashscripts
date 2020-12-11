@@ -13,7 +13,7 @@
 CMD=$1
 BUILDCMD="JEKYLL_ENV=production bundle exec jekyll build --trace"
 RUNCMD="JEKYLL_ENV=development bundle exec jekyll serve --trace"
-INSTALLCMD="gem install jekyll bundler"
+INSTALLCMD="bundle install"
 
 # check if we are inside a jekyll directory
 JEKYLL=$(find . -maxdepth 1 -name _config.yml)
