@@ -1,17 +1,19 @@
-#!/bin/bash
+#!/bin/sh
 # This script helps to create, run or build a jekyll site
 # 
 # Parameter:
 # site build    Use it to build for production
 # site run      Use it to serve a jekyll site
+# site install  Use it to install jekyll gems
 # 
 # Author: Arne Gockeln
 # Version: 0.1
 # 
 
 CMD=$1
-BUILDCMD="JEKYLL_ENV=production bundle exec jekyll build"
-RUNCMD="JEKYLL_ENV=development bundle exec jekyll serve"
+BUILDCMD="JEKYLL_ENV=production bundle exec jekyll build --trace"
+RUNCMD="JEKYLL_ENV=development bundle exec jekyll serve --trace"
+INSTALLCMD="gem install jekyll bundler"
 
 # check if we are inside a jekyll directory
 JEKYLL=$(find . -maxdepth 1 -name _config.yml)
@@ -34,8 +36,12 @@ case "$CMD" in
     eval $RUNCMD
     ;;
 
+    install)
+    eval $INSTALLCMD
+    ;;
+
     *)
-    echo $"Usage: $0 {run|build}"
+    echo $"Usage: $0 {run|build|install}"
     exit 1
 esac
 
