@@ -9,12 +9,12 @@
 # site clean    Use it to clean the site and metadata files
 # 
 # Author: Arne Gockeln
-# Version: 0.5
+# Version: 0.6
 # 
 
 CMD=$1
 BUILDCMD="JEKYLL_ENV=production bundle exec jekyll build --trace"
-RUNCMD="JEKYLL_ENV=development bundle exec jekyll serve --trace --draft --config _config.yml,_config_dev.yml"
+RUNCMD="bundle exec jekyll serve --trace --draft --config _config.yml,_config_dev.yml"
 INSTALLCMD="bundle install"
 CLEANCMD="bundle exec jekyll clean"
 UPDATECMD="bundle update"
